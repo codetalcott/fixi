@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.prod.json",
+  "compilerOptions": {
+    "outDir": "./dist/variants",
+    "declaration": false,
+    "declarationMap": false
+  },
+  "include": ["src/compat.ts", "src/core/fixi-core.ts", "src/core/types.ts", "src/swapping/swap-strategies.ts"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+}

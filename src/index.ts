@@ -3,24 +3,16 @@
  * Main entry point and compatibility layer
  */
 
-// Core exports
+// Core exports - consolidated for performance
 export * from './core/types';
-export * from './core/utils';
-export * from './core/events';
-export * from './core/attributes';
+export * from './core/fixi-core';
 
-// Swapping exports
+// Swapping exports - kept separate for tree-shaking  
 export * from './swapping/swap-strategies';
 
 // Re-export key functions for easy access
-export { dispatchFxEvent } from './core/events';
-export { parseAttributes } from './core/attributes';
+export { dispatchFxEvent, parseAttributes, shouldIgnore, hasFxAction } from './core/fixi-core';
 export { executeSwap } from './swapping/swap-strategies';
-export {
-  shouldIgnore,
-  getDefaultTrigger,
-  hasFxAction
-} from './core/utils';
 
 // Compatibility object for drop-in replacement
 export const fixi = {

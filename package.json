@@ -14,30 +14,26 @@
       "types": "./dist/core/*.d.ts",
       "import": "./dist/core/*.js"
     },
-    "./processing/*": {
-      "types": "./dist/processing/*.d.ts",
-      "import": "./dist/processing/*.js"
-    },
-    "./requests/*": {
-      "types": "./dist/requests/*.d.ts",
-      "import": "./dist/requests/*.js"
-    },
     "./swapping/*": {
       "types": "./dist/swapping/*.d.ts",
       "import": "./dist/swapping/*.js"
-    },
-    "./plugins/*": {
-      "types": "./dist/plugins/*.d.ts",
-      "import": "./dist/plugins/*.js"
     }
   },
   "scripts": {
     "build": "tsc",
+    "build:dev": "tsc",
+    "build:prod": "tsc --project tsconfig.prod.json",
+    "build:minimal": "mkdir -p dist/variants && tsc --project tsconfig.minimal.json && cp dist/variants/minimal.js dist/fiximod-minimal.js",
+    "build:compat": "mkdir -p dist/variants && tsc --project tsconfig.compat.json && cp dist/variants/compat.js dist/fiximod-compat.js",
+    "build:full": "mkdir -p dist/variants && tsc --project tsconfig.full.json && cp dist/variants/full.js dist/fiximod-full.js",
+    "build:variants": "npm run build:minimal && npm run build:compat && npm run build:full",
     "test": "vitest",
     "test:watch": "vitest --watch",
     "test:coverage": "vitest --coverage",
     "dev": "tsc --watch",
     "size": "npm run build && ls -l dist/index.js | awk '{print \"compiled:\", $5}' && gzip -c dist/index.js | wc -c | awk '{print \"gzipped:\", $1}'",
+    "size:prod": "npm run build:prod && ls -l dist/index.js | awk '{print \"compiled:\", $5}' && gzip -c dist/index.js | wc -c | awk '{print \"gzipped:\", $1}'",
+    "size:variants": "npm run build:variants && echo 'Bundle Sizes:' && for f in dist/fiximod-*.js; do echo -n \"$(basename $f): \"; ls -l $f | awk '{print $5}' | tr -d '\\n'; echo -n ' bytes, '; gzip -c $f | wc -c | awk '{print $1 \" bytes gzipped\"}'; done",
     "lint": "tsc --noEmit"
   },
   "devDependencies": {

@@ -93,42 +93,6 @@ export interface FxEventMap {
 
 export type FxEventType = keyof FxEventMap;
 
-// Plugin system types
-export interface Plugin {
-  name: string;
-  version?: string;
-  init?: (fixi: FixiInstance) => void | Promise<void>;
-  hooks?: Partial<PluginHooks>;
-}
-
-export interface PluginHooks {
-  beforeInit: (element: Element, options: Record<string, any>) => boolean | void;
-  afterInit: (element: Element) => void;
-  beforeRequest: (config: RequestConfig) => boolean | void;
-  afterRequest: (config: RequestConfig) => void;
-  beforeSwap: (config: RequestConfig) => boolean | void;
-  afterSwap: (config: RequestConfig) => void;
-  onError: (config: RequestConfig, error: Error) => void;
-}
-
-export interface FixiInstance {
-  process: (node: Node) => void;
-  init: (element: Element) => void;
-  plugins: PluginManager;
-  observer?: MutationObserver;
-  destroy: () => void;
-}
-
-export interface PluginManager {
-  register: (plugin: Plugin) => void;
-  unregister: (name: string) => void;
-  executeHook: <T extends keyof PluginHooks>(
-    hook: T, 
-    ...args: Parameters<NonNullable<PluginHooks[T]>>
-  ) => boolean;
-  getPlugin: (name: string) => Plugin | undefined;
-  listPlugins: () => string[];
-}
 
 // Utility types for DOM elements with fixi data
 export interface FxElement extends Element {
@@ -146,5 +110,4 @@ export interface FixiConfig {
   autoInit?: boolean;
   observe?: boolean;
   defaultHeaders?: Record<string, string>;
-  plugins?: Plugin[];
 }
