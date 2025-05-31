@@ -1,0 +1,25 @@
+{
+  "name": "fixi-performance-benchmarks",
+  "version": "1.0.0",
+  "description": "Performance testing suite for fixi vs fiximod",
+  "type": "module",
+  "scripts": {
+    "measure-bundles": "node measure-bundles.js",
+    "run-automated": "node automated-perf.js",
+    "run-all": "npm run measure-bundles && npm run run-automated",
+    "serve": "python3 -m http.server 8080",
+    "open-browser": "open http://localhost:8080",
+    "track-status": "node performance-tracker.js status",
+    "track-export": "node performance-tracker.js export",
+    "track-trend": "node performance-tracker.js trend",
+    "ci-check": "node ci-performance-check.js"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "keywords": [
+    "performance",
+    "benchmarking",
+    "fixi",
+    "hypermedia"
+  ]
+}

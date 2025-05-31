@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Comparison: fixi vs fiximod</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .result-card {
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: #f9f9f9;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+        
+        .better {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .worse {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .controls {
+            margin: 20px 0;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        .progress {
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: #007bff;
+            transition: width 0.3s ease;
+        }
+        
+        #test-container {
+            display: none;
+            border: 1px solid #eee;
+            padding: 10px;
+            max-height: 200px;
+            overflow: auto;
+            margin: 10px 0;
+        }
+        
+        .memory-info {
+            font-family: monospace;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Performance Comparison: fixi vs fiximod</h1>
+    
+    <div class="test-section">
+        <h2>Bundle Size Comparison</h2>
+        <div class="results">
+            <div class="result-card">
+                <h3>fixi.js (Original)</h3>
+                <div class="metric">
+                    <span>Raw size:</span>
+                    <span id="fixi-raw-size">Loading...</span>
+                </div>
+                <div class="metric">
+                    <span>Gzipped:</span>
+                    <span id="fixi-gzip-size">Loading...</span>
+                </div>
+                <div class="metric">
+                    <span>Parse time:</span>
+                    <span id="fixi-parse-time">Loading...</span>
+                </div>
+            </div>
+            <div class="result-card">
+                <h3>fiximod (Modular)</h3>
+                <div class="metric">
+                    <span>Raw size:</span>
+                    <span id="fiximod-raw-size">Loading...</span>
+                </div>
+                <div class="metric">
+                    <span>Gzipped:</span>
+                    <span id="fiximod-gzip-size">Loading...</span>
+                </div>
+                <div class="metric">
+                    <span>Parse time:</span>
+                    <span id="fiximod-parse-time">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Runtime Performance Tests</h2>
+        <div class="controls">
+            <button onclick="runInitializationTest()">Test Initialization</button>
+            <button onclick="runElementProcessingTest()">Test Element Processing</button>
+            <button onclick="runEventHandlingTest()">Test Event Handling</button>
+            <button onclick="runDOMSwappingTest()">Test DOM Swapping</button>
+            <button onclick="runScalingTest()">Test Scaling (1000 elements)</button>
+            <button onclick="runMemoryTest()">Test Memory Usage</button>
+            <button onclick="runAllTests()">Run All Tests</button>
+        </div>
+        
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+        </div>
+        
+        <div class="results">
+            <div class="result-card">
+                <h3>fixi.js Results</h3>
+                <div id="fixi-results">
+                    <div class="metric">
+                        <span>Initialization:</span>
+                        <span id="fixi-init">-</span>
+                    </div>
+                    <div class="metric">
+                        <span>Element Processing:</span>
+                        <span id="fixi-elements">-</span>
+                    </div>
+                    <div class="metric">
+                        <span>Event Handling:</span>
+                        <span id="fixi-events">-</span>
+                    </div>
+                    <div class="metric">
+                        <span>DOM Swapping:</span>
+                        <span id="fixi-swapping">-</span>
+                    </div>
+                    <div class="metric">
+                        <span>Scaling (1000):</span>
+                        <span id="fixi-scaling">-</span>
+                    </div>
+                    <div class="metric">
+                        <span>Memory Peak:</span>
+                        <span id="fixi-memory">-</span>
+                    </div>
+                </div>
+            </div>
+            <div class="result-card">
+                <h3>fiximod Results</h3>
+                <div id="fiximod-results">
+                    <div class="metric">
+                        <span>Initialization:</span>
+                        <span id="fiximod-init">-</span>
+                    </div>
+                    <div class="metric">
+                        <span>Element Processing:</span>
+                        <span id="fiximod-elements">-</span>
+                    </div>
+                    <div class="metric">
+                        <span>Event Handling:</span>
+                        <span id="fiximod-events">-</span>
+                    </div>
+                    <div class="metric">
+                        <span>DOM Swapping:</span>
+                        <span id="fiximod-swapping">-</span>
+                    </div>
+                    <div class="metric">
+                        <span>Scaling (1000):</span>
+                        <span id="fiximod-scaling">-</span>
+                    </div>
+                    <div class="metric">
+                        <span>Memory Peak:</span>
+                        <span id="fiximod-memory">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Memory Profiling</h2>
+        <div class="memory-info">
+            <div>Initial Heap: <span id="initial-heap">-</span> MB</div>
+            <div>Peak Heap: <span id="peak-heap">-</span> MB</div>
+            <div>GC Count: <span id="gc-count">-</span></div>
+        </div>
+        <button onclick="forceGC()">Force Garbage Collection</button>
+    </div>
+
+    <div id="test-container"></div>
+
+    <script src="performance-harness.js"></script>
+    <script>
+        // Initialize bundle size measurements on load
+        window.addEventListener('load', () => {
+            measureBundleSizes();
+            updateMemoryInfo();
+        });
+    </script>
+</body>
+</html>

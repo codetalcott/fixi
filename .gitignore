@@ -1,0 +1,93 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# TypeScript
+*.js.map
+*.d.ts.map
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Performance test artifacts
+benchmarks/fiximod-built.js
+benchmarks/performance-history.json
+benchmarks/bundle-size-report.json
+benchmarks/performance-report.json
+benchmarks/performance-check-results.json
+benchmarks/performance-comment.md
+benchmarks/*.csv
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Package manager lockfiles (keep package-lock.json but ignore others)
+yarn.lock
+pnpm-lock.yaml
+
+# Test artifacts
+test-results/
+playwright-report/
+test-results.xml
+
+# Documentation build
+docs/build/
+docs/.docusaurus/
+
+# Backup files
+*.bak
+*.backup
+
+# Local development
+.local/
+.vite/

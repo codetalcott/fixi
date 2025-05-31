@@ -1,0 +1,62 @@
+{
+  "name": "fiximod",
+  "version": "0.7.0",
+  "description": "Modular TypeScript implementation of fixi.js with tree-shaking support",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./core/*": {
+      "types": "./dist/core/*.d.ts",
+      "import": "./dist/core/*.js"
+    },
+    "./processing/*": {
+      "types": "./dist/processing/*.d.ts",
+      "import": "./dist/processing/*.js"
+    },
+    "./requests/*": {
+      "types": "./dist/requests/*.d.ts",
+      "import": "./dist/requests/*.js"
+    },
+    "./swapping/*": {
+      "types": "./dist/swapping/*.d.ts",
+      "import": "./dist/swapping/*.js"
+    },
+    "./plugins/*": {
+      "types": "./dist/plugins/*.d.ts",
+      "import": "./dist/plugins/*.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
+    "dev": "tsc --watch",
+    "size": "npm run build && ls -l dist/index.js | awk '{print \"compiled:\", $5}' && gzip -c dist/index.js | wc -c | awk '{print \"gzipped:\", $1}'",
+    "lint": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@vitest/coverage-v8": "^1.0.0",
+    "jsdom": "^23.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "hypermedia",
+    "htmx",
+    "dom",
+    "typescript",
+    "modular",
+    "tree-shaking"
+  ],
+  "license": "0BSD"
+}
