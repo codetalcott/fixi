@@ -4,9 +4,9 @@ A modular, TypeScript-powered implementation of [fixi.js](./fixi/README.md) with
 
 ## Overview
 
-fiximod brings modern development practices to the ultra-minimalist fixi hypermedia library while maintaining its core philosophy. This modular architecture enables:
+fiximod brings the complexity, and conveniences, of modern development practices to the ultra-minimalist fixi hypermedia library while maintaining (some of) its core philosophy. Why? Sometimes, this is what you need. The modular architecture enables:
 
-- 🌳 **Tree-shaking**: Import only what you need
+- 🌳 **Tree-shaking**: Import only what you need (which... in most cases will be unnecessary)
 - 📝 **Full TypeScript support**: Complete type safety and IDE integration
 - 🔌 **Plugin system**: Extend functionality without modifying core
 - ✅ **100% test coverage**: Comprehensive test suite with Vitest
@@ -130,7 +130,7 @@ const customSwap: SwapStrategy = (config) => {
 
 ## Plugin System
 
-Create powerful extensions:
+Create extensions:
 
 ```typescript
 const myPlugin: Plugin = {
