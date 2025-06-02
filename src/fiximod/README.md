@@ -1,6 +1,6 @@
 # Fiximod - Modern Hypermedia Control Library
 
-A TypeScript reimplementation of [fixi.js](https://github.com/bigskysoftware/fixi) with modern architecture, full type safety, and extensible design.
+A TypeScript re-implementation of [fixi.js](https://github.com/bigskysoftware/fixi) with modern architecture, full type safety, and extensible design.
 
 ## Features
 
@@ -89,11 +89,13 @@ Fiximod separates **WHAT** changes to make (swap strategies) from **HOW** to app
 ### Built-in Mechanisms
 
 1. **View Transitions** (default - matches fixi.js)
+
    ```typescript
    init(); // Uses View Transitions automatically
    ```
 
 2. **Immediate** (no transitions)
+
    ```typescript
    import { immediateMechanism } from 'fiximod';
    onFixiEvent(document, 'config', (evt) => {
@@ -102,6 +104,7 @@ Fiximod separates **WHAT** changes to make (swap strategies) from **HOW** to app
    ```
 
 3. **Custom Animations**
+
    ```typescript
    import { customAnimationMechanism } from 'fiximod';
    const fadeSwap = customAnimationMechanism({
@@ -111,6 +114,7 @@ Fiximod separates **WHAT** changes to make (swap strategies) from **HOW** to app
    ```
 
 4. **Idiomorph** (future plugin)
+
    ```typescript
    // Coming soon: intelligent DOM morphing
    import { idiomorphMechanism } from 'fiximod-idiomorph';
@@ -204,6 +208,7 @@ Fiximod is designed to be conceptually compatible with fixi.js:
 ```
 
 Key differences:
+
 - Uses ES modules instead of IIFE
 - TypeScript instead of JavaScript
 - View Transitions configurable (but default matches fixi.js)

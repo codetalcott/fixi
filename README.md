@@ -1,6 +1,7 @@
 # fixi.js & fiximod
 
 This repository contains:
+
 - **[fixi.js](./fixi/)** - The original ultra-minimalist hypermedia library (3.2KB)
 - **[fiximod](./src/fiximod/)** - A modern TypeScript reimplementation with modular architecture
 
@@ -27,12 +28,14 @@ Both libraries use the same HTML attributes:
 ```
 
 ### Using fixi.js (Original)
+
 ```html
 <script src="https://unpkg.com/fixi.js"></script>
 <!-- Auto-initializes -->
 ```
 
 ### Using fiximod (TypeScript)
+
 ```typescript
 import { init } from './src/fiximod';
 init(); // Same behavior as fixi.js
@@ -41,12 +44,14 @@ init(); // Same behavior as fixi.js
 ## When to Use Which?
 
 **Use fixi.js when:**
+
 - Minimal bundle size is critical (1.4KB)
 - You want a single file solution
 - No build process needed
 - Maximum simplicity
 
 **Use fiximod when:**
+
 - You need TypeScript support
 - You want modular, testable code
 - You need custom swap mechanisms
