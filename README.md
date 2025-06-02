@@ -1,219 +1,62 @@
-# fiximod
+# fixi.js & fiximod
 
-A modular, TypeScript-powered implementation of [fixi.js](./fixi/README.md) with tree-shaking support and comprehensive typing.
+This repository contains:
+- **[fixi.js](./fixi/)** - The original ultra-minimalist hypermedia library (3.2KB)
+- **[fiximod](./src/fiximod/)** - A modern TypeScript reimplementation with modular architecture
 
-## Overview
-
-fiximod brings the conveniences, and complexity, of modern development practices to the ultra-minimalist fixi hypermedia library while maintaining (some of) its core philosophy. Why? Sometimes, this is what you need. The modular architecture enables:
-
-- 🌳 **Tree-shaking**: Import only what you need (which... in most cases is unnecessary)
-- 📝 **Full TypeScript support**: Complete type safety and IDE integration
-- 🔌 **Plugin system**: Extend functionality without modifying core
-- ✅ **100% test coverage**: Comprehensive test suite with Vitest
-- 🎯 **API compatible**: Drop-in replacement for original fixi.js
-
-## Installation
-
-```bash
-npm install fiximod
-```
-
-Or use directly via CDN:
-
-```html
-<script type="module">
-  import { fixi } from 'https://cdn.jsdelivr.net/npm/fiximod/dist/index.js'
-</script>
-```
-
-## Quick Start
-
-### Basic Usage (Compatible with fixi.js)
-
-```html
-<button fx-action="/api/hello" fx-target="#result">
-  Click me
-</button>
-<div id="result"></div>
-
-<script type="module">
-  import { fixi } from 'fiximod'
-  // Auto-initializes on DOMContentLoaded
-</script>
-```
-
-### Modular Usage
-
-```typescript
-import { processElement, dispatchFxEvent } from 'fiximod/core'
-import { executeSwap } from 'fiximod/swapping'
-
-// Use individual functions for fine-grained control
-const element = document.querySelector('[fx-action]')
-processElement(element)
-```
-
-## Architecture
-
-### Module Structure
-
-```
-fiximod/
-├── core/
-│   ├── types.ts       # TypeScript interfaces
-│   ├── events.ts      # Event system
-│   ├── attributes.ts  # Attribute parsing
-│   └── utils.ts       # Utilities
-├── processing/        # Element processing
-├── requests/          # HTTP request handling
-├── swapping/          # DOM manipulation
-└── plugins/           # Plugin system
-```
-
-### Core Modules
-
-#### Events
-
-```typescript
-import { dispatchFxEvent } from 'fiximod/core/events'
-
-// Dispatch typed events
-dispatchFxEvent(element, 'config', { 
-  cfg: requestConfig,
-  requests: activeRequests 
-})
-```
-
-#### Attributes
-
-```typescript
-import { parseAttributes } from 'fiximod/core/attributes'
-
-const attrs = parseAttributes(element)
-// { action: '/api', method: 'GET', target: '#result', ... }
-```
-
-#### Swapping
-
-```typescript
-import { executeSwap } from 'fiximod/swapping/swap-strategies'
-
-await executeSwap({
-  target: element,
-  text: '<p>New content</p>',
-  swap: 'innerHTML'
-})
-```
-
-## TypeScript Support
-
-Full typing for all APIs:
-
-```typescript
-import type { 
-  RequestConfig,
-  FxEventMap,
-  Plugin,
-  SwapStrategy 
-} from 'fiximod'
-
-// Typed event listeners
-element.addEventListener('fx:before', (e: FxEventMap['fx:before']) => {
-  console.log(e.detail.cfg.action)
-})
-
-// Custom swap strategies
-const customSwap: SwapStrategy = (config) => {
-  // Your implementation
-}
-```
-
-## Plugin System
-
-Create extensions:
-
-```typescript
-const myPlugin: Plugin = {
-  name: 'my-plugin',
-  hooks: {
-    beforeRequest: (config) => {
-      // Modify request config
-      config.headers['X-Custom'] = 'value'
-    },
-    afterSwap: (config) => {
-      // Post-swap actions
-    }
-  }
-}
-
-fixi.plugins.register(myPlugin)
-```
-
-## Bundle Sizes
-
-- **Core only**: ~2KB gzipped (minimal feature set)
-- **Full bundle**: ~3.2KB gzipped (all features)
-- **Custom bundle**: Tree-shake to your needs
-
-## Differences from Original fixi.js
+## Quick Comparison
 
 | Feature | fixi.js | fiximod |
 |---------|---------|---------|
-| Size | 1.4KB gzipped | 2-3.2KB gzipped |
-| TypeScript | ❌ | ✅ Full support |
-| Tree-shaking | ❌ | ✅ Modular imports |
-| Plugin system | ❌ | ✅ Hook-based |
-| Test coverage | Visual tests | ✅ Unit + integration |
-| Module format | IIFE | ESM |
-| Browser support | Modern | Modern |
+| Size | 1.4KB gzipped | ~4KB gzipped |
+| Language | JavaScript | TypeScript |
+| Architecture | Single IIFE | 8 ES modules |
+| View Transitions | ✅ Always | ✅ Configurable |
+| Type Safety | ❌ | ✅ Full |
+| Tree Shaking | ❌ | ✅ |
+| Extensibility | Events only | Events + Modules |
 
-## Development
+## Quick Start
 
-```bash
-# Install dependencies
-npm install
+Both libraries use the same HTML attributes:
 
-# Run tests
-npm test
-
-# Build
-npm run build
-
-# Check bundle size
-npm run size
+```html
+<button fx-action="/api/data" fx-swap="innerHTML">
+  Load Data
+</button>
 ```
 
-## Migration from fixi.js
-
-fiximod is 100% API compatible with fixi.js:
-
-```javascript
-// Before (fixi.js)
-<script src="fixi.js"></script>
-
-// After (fiximod) 
-<script type="module">
-  import { fixi } from 'fiximod'
-</script>
+### Using fixi.js (Original)
+```html
+<script src="https://unpkg.com/fixi.js"></script>
+<!-- Auto-initializes -->
 ```
 
-All HTML attributes and events work identically. The modular architecture is additive - use it when you need it.
+### Using fiximod (TypeScript)
+```typescript
+import { init } from './src/fiximod';
+init(); // Same behavior as fixi.js
+```
 
-## Philosophy
+## When to Use Which?
 
-fiximod maintains fixi's minimalist philosophy while embracing modern tooling:
+**Use fixi.js when:**
+- Minimal bundle size is critical (1.4KB)
+- You want a single file solution
+- No build process needed
+- Maximum simplicity
 
-- **Every byte matters**: Tree-shaking ensures you only ship what you use
-- **No magic**: Explicit, debuggable, understandable code
-- **Progressive enhancement**: Start simple, add complexity as needed
-- **Type safety**: Catch errors at build time, not runtime
+**Use fiximod when:**
+- You need TypeScript support
+- You want modular, testable code
+- You need custom swap mechanisms
+- You're building larger applications
+
+## Documentation
+
+- [fixi.js Documentation](./fixi/README.md)
+- [fiximod Documentation](./src/fiximod/README.md)
 
 ## License
 
-[0BSD](LICENSE) - Same as original fixi.js
-
-## See Also
-
-- [Original fixi.js](./fixi/) - The ultra-minimalist inspiration
-- [htmx](https://htmx.org) - The full-featured hypermedia library
-- [Examples](./examples/) - Sample applications and patterns
+[0BSD](LICENSE) - Same as original fixi.js by Big Sky Software

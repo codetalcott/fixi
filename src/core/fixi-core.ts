@@ -89,13 +89,24 @@ export function parseAttributes(element: Element): ParsedAttributes {
   const target = element.getAttribute('fx-target') || '';
   const swap = element.getAttribute('fx-swap') || 'outerHTML';
   
-  // Inlined getDefaultTrigger logic
+  // Inlined getDefaultTrigger logic with proper input type handling
   const explicitTrigger = element.getAttribute('fx-trigger');
-  const trigger = explicitTrigger || (
-    element.tagName === 'FORM' ? 'submit' :
-    ['INPUT', 'TEXTAREA', 'SELECT'].includes(element.tagName) ? 'change' :
-    'click'
-  );
+  let defaultTrigger = 'click';
+  if (element.tagName === 'FORM') {
+    defaultTrigger = 'submit';
+  } else if (element.tagName === 'INPUT') {
+    const inputType = (element as HTMLInputElement).type?.toLowerCase();
+    // Button-like inputs use click, form inputs use change
+    if (['button', 'submit', 'reset', 'image'].includes(inputType)) {
+      defaultTrigger = 'click';
+    } else {
+      defaultTrigger = 'change';
+    }
+  } else if (['TEXTAREA', 'SELECT'].includes(element.tagName)) {
+    defaultTrigger = 'change';
+  }
+  
+  const trigger = explicitTrigger || defaultTrigger;
 
   return {
     action,

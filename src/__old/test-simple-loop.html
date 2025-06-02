@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Loop Test</title>
+    <script>
+        let fetchCount = 0;
+        // Mock fetch
+        window.fetch = async (url) => {
+            fetchCount++;
+            console.log(`Fetch #${fetchCount}: ${url}`);
+            if (fetchCount > 5) {
+                throw new Error('Too many fetches - infinite loop detected!');
+            }
+            return {
+                text: async () => 'Response text'
+            };
+        };
+    </script>
+    <script src="fiximod-compat-standalone-fixed.js"></script>
+</head>
+<body>
+    <h1>Simple Loop Test</h1>
+    <button fx-action="/test" fx-swap="innerHTML">Click me</button>
+    
+    <script>
+        // Just log events
+        ['fx:config', 'fx:before', 'fx:after', 'fx:swapped'].forEach(eventName => {
+            document.addEventListener(eventName, (evt) => {
+                console.log(eventName);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiximod Test</title>
+    <style>
+        body { font-family: sans-serif; margin: 2rem; }
+        .container { max-width: 600px; }
+        button { 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 0.5rem 1rem; 
+            border-radius: 4px; 
+            cursor: pointer;
+            margin: 0.5rem 0;
+        }
+        button:hover { background: #0056b3; }
+        .result { 
+            padding: 1rem; 
+            background: #f8f9fa; 
+            border: 1px solid #dee2e6; 
+            border-radius: 4px; 
+            margin: 1rem 0;
+        }
+        .loading { opacity: 0.6; cursor: wait; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fiximod Test Page</h1>
+        
+        <h2>Basic Tests</h2>
+        
+        <div>
+            <h3>1. Simple innerHTML swap</h3>
+            <button fx-action="data:text/plain,Hello from Fiximod!" fx-swap="innerHTML">
+                Click me
+            </button>
+        </div>
+        
+        <div>
+            <h3>2. Target selector</h3>
+            <button fx-action="data:text/plain,<p>Updated target content!</p>" fx-target="#target" fx-swap="innerHTML">
+                Update Target
+            </button>
+            <div id="target" class="result">Target content will appear here</div>
+        </div>
+        
+        <div>
+            <h3>3. Form submission</h3>
+            <form fx-action="data:text/plain,Form submitted!" fx-target="#form-result">
+                <input type="text" name="message" value="Test message" />
+                <button type="submit">Submit Form</button>
+            </form>
+            <div id="form-result" class="result">Form result will appear here</div>
+        </div>
+        
+        <div>
+            <h3>4. Custom event handling</h3>
+            <button id="custom-btn" fx-action="data:text/plain,Custom swap complete!">
+                Custom Button
+            </button>
+            <div id="custom-result" class="result">Custom result will appear here</div>
+        </div>
+        
+        <div>
+            <h3>5. Swap mechanism testing</h3>
+            <button id="immediate-btn" fx-action="data:text/plain,<p>Immediate swap (no transition)</p>">
+                Immediate Swap
+            </button>
+            <button id="animated-btn" fx-action="data:text/plain,<p>Custom animated swap</p>">
+                Animated Swap
+            </button>
+            <div id="mechanism-result" class="result">Swap mechanism result will appear here</div>
+        </div>
+    </div>
+    
+    <script type="module">
+        // Import fiximod
+        import { 
+            init, 
+            onFixiEvent, 
+            swapMechanismRegistry,
+            immediateMechanism,
+            customAnimationMechanism 
+        } from '../../dist/fiximod/index.js';
+        
+        // Initialize fiximod with View Transitions as default (matches fixi.js)
+        const fiximod = init({
+            defaultSwapMechanism: 'view-transition'
+        });
+        console.log('Fiximod initialized with View Transitions:', fiximod);
+        
+        // Add global event logging
+        ['config', 'before', 'after', 'swapped', 'error'].forEach(eventType => {
+            onFixiEvent(document, eventType, (evt) => {
+                console.log(`fx:${eventType}`, evt.target, evt.detail);
+            });
+        });
+        
+        // Custom handling for the custom button
+        onFixiEvent(document, 'before', (evt) => {
+            if (evt.target.id === 'custom-btn') {
+                evt.target.classList.add('loading');
+                evt.detail.cfg.target = document.getElementById('custom-result');
+            }
+        });
+        
+        onFixiEvent(document, 'finally', (evt) => {
+            if (evt.target.id === 'custom-btn') {
+                evt.target.classList.remove('loading');
+            }
+        });
+        
+        // Demo swap mechanisms
+        onFixiEvent(document, 'config', (evt) => {
+            if (evt.target.id === 'immediate-btn') {
+                // Override to use immediate mechanism (no transitions)
+                evt.detail.cfg.swapMechanism = immediateMechanism;
+                evt.detail.cfg.target = document.getElementById('mechanism-result');
+            }
+            
+            if (evt.target.id === 'animated-btn') {
+                // Override to use custom animation mechanism
+                evt.detail.cfg.swapMechanism = customAnimationMechanism({
+                    duration: 600,
+                    beforeSwap: (target) => target.style.background = 'yellow',
+                    afterSwap: (target) => target.style.background = ''
+                });
+                evt.detail.cfg.target = document.getElementById('mechanism-result');
+            }
+        });
+        
+        // Test programmatic access
+        window.testFiximod = () => {
+            console.log('Fiximod instance:', fiximod);
+            console.log('Processor:', fiximod.getProcessor());
+        };
+        
+        console.log('Test page loaded. Open console to see event logs.');
+        console.log('Run testFiximod() to test programmatic access.');
+    </script>
+</body>
+</html>

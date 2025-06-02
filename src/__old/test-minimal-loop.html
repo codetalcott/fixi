@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Minimal Loop Debug</title>
+    <script>
+        // Override console.log to prevent spam
+        let logCount = 0;
+        const originalLog = console.log;
+        console.log = function(...args) {
+            logCount++;
+            if (logCount > 100) {
+                console.error('TOO MANY LOGS - STOPPING');
+                throw new Error('Infinite loop detected');
+            }
+            originalLog.apply(console, args);
+        };
+    </script>
+    <script src="fiximod-compat-standalone-fixed.js"></script>
+</head>
+<body>
+    <h1>Test Specific Scenario</h1>
+    
+    <!-- This simulates what test 14 does -->
+    <div id="test14">
+        <button fx-action="/test14" fx-swap="innerHTML">Test 14 Button</button>
+    </div>
+    
+    <!-- This simulates what test 15 does -->
+    <div id="test15">  
+        <button fx-action="/test15" fx-swap="innerHTML">Test 15 Button</button>
+    </div>
+    
+    <script>
+        // Mock fetch
+        document.addEventListener("fx:config", (evt) => {
+            evt.detail.cfg.fetch = async (url) => {
+                console.log('Fetch called for:', url);
+                if (url === '/test14') {
+                    return { text: async () => '<div>Test 14 Result</div>' };
+                }
+                if (url === '/test15') {
+                    // This is what causes the issue - returning content with fx-trigger="fx:inited"
+                    return { text: async () => '<p fx-action="/nested" fx-trigger="fx:inited">Trigger me</p>' };
+                }
+                if (url === '/nested') {
+                    return { text: async () => 'Nested content' };
+                }
+            };
+        });
+        
+        // Add abort behavior to test14 button
+        document.querySelector('#test14 button').addEventListener("fx:before", (evt) => {
+            console.log('Test 14: aborting');
+            evt.detail.cfg.abort();
+            evt.detail.cfg.confirm = async () => {
+                await new Promise(r => setTimeout(r, 1));
+                // Returns undefined (falsy)
+            };
+        });
+        
+        // Track mutations
+        const origMO = MutationObserver;
+        let mutationCount = 0;
+        window.MutationObserver = class extends origMO {
+            constructor(callback) {
+                super((mutations) => {
+                    mutationCount++;
+                    console.log(`Mutation batch #${mutationCount} with ${mutations.length} mutations`);
+                    if (mutationCount > 20) {
+                        console.error('Too many mutations!');
+                        return;
+                    }
+                    callback(mutations);
+                });
+            }
+        };
+        
+        // Run the scenario
+        setTimeout(async () => {
+            console.log('=== CLICKING TEST 14 BUTTON ===');
+            document.querySelector('#test14 button').click();
+            
+            await new Promise(r => setTimeout(r, 100));
+            
+            console.log('=== CLICKING TEST 15 BUTTON ===');
+            document.querySelector('#test15 button').click();
+        }, 500);
+    </script>
+</body>
+</html>

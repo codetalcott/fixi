@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Abort</title>
+    <script>
+        // Track what's happening
+        let requestCount = 0;
+        let abortCount = 0;
+        
+        function fetchMock(action, init){
+            requestCount++;
+            console.log(`Fetch request #${requestCount}:`, action, 'aborted?', init.signal?.aborted);
+            if (init.signal && init.signal.aborted) {
+                abortCount++;
+                console.log(`Abort #${abortCount}`);
+                throw new DOMException("Aborted", "AbortError");
+            }
+            return Promise.resolve({text : () => Promise.resolve(`<div>Response ${requestCount}</div>`)});
+        }
+    </script>
+    <script src="fiximod-compat-standalone-fixed.js"></script>
+</head>
+<body>
+    <h1>Test Abort Behavior</h1>
+    
+    <div class="test">
+        <h3>Test 1: Normal request</h3>
+        <button id="btn1" fx-action="/test1" fx-swap="innerHTML">Button 1</button>
+    </div>
+    
+    <div class="test">
+        <h3>Test 2: Abort request</h3>
+        <button id="btn2" fx-action="/test2" fx-swap="innerHTML">Button 2</button>
+    </div>
+    
+    <script>
+        // Set up mock fetch for all buttons
+        document.addEventListener("fx:config", (evt) => {
+            evt.detail.cfg.fetch = fetchMock;
+        });
+        
+        // For button 2, abort the request
+        document.getElementById('btn2').addEventListener("fx:before", (evt) => {
+            console.log('Calling abort()');
+            evt.detail.cfg.abort();
+            evt.detail.cfg.confirm = async() => {
+                console.log('Confirm called');
+                await new Promise(resolve => setTimeout(resolve, 1));
+                return true;
+            }
+        });
+        
+        // Log all events
+        ['fx:config', 'fx:before', 'fx:after', 'fx:error', 'fx:finally', 'fx:swapped'].forEach(eventName => {
+            document.addEventListener(eventName, (evt) => {
+                console.log(eventName, evt.target.id || evt.target.tagName);
+            });
+        });
+        
+        // Run tests
+        setTimeout(() => {
+            console.log('=== Clicking button 1 ===');
+            document.getElementById('btn1').click();
+            
+            setTimeout(() => {
+                console.log('=== Clicking button 2 ===');
+                document.getElementById('btn2').click();
+            }, 100);
+        }, 100);
+    </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+{
+  "name": "fiximod",
+  "version": "1.0.0",
+  "description": "Modern, modular hypermedia control library - TypeScript reimplementation of fixi.js",
+  "type": "module",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js"
+    },
+    "./core/*": {
+      "types": "./core/*.d.ts",
+      "import": "./core/*.js"
+    }
+  },
+  "files": [
+    "*.js",
+    "*.d.ts",
+    "*.d.ts.map",
+    "core/**/*.js",
+    "core/**/*.d.ts",
+    "core/**/*.d.ts.map",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf *.js *.d.ts *.d.ts.map core/**/*.js core/**/*.d.ts core/**/*.d.ts.map",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "hypermedia",
+    "htmx",
+    "fixi",
+    "typescript",
+    "dom",
+    "ajax",
+    "spa"
+  ],
+  "author": "Big Sky Software (TypeScript port)",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bigskysoftware/fixi",
+    "directory": "src/fiximod"
+  }
+}
